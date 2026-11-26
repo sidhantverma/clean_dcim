@@ -2,6 +2,18 @@ plugins {
     id 'com.android.application'
 }
 
+// Release signing comes from keystore.properties (local, gitignored) or
+// RELEASE_* environment variables (CI). Without either, the release APK is unsigned.
+def signingProps = new Properties()
+def signingPropsFile = rootProject.file('keystore.properties')
+if (signingPropsFile.exists()) {
+    signingPropsFile.withInputStream { signingProps.load(it) }
+}
+def signingValue = { String key, String envName ->
+    signingProps.getProperty(key) ?: System.getenv(envName)
+}
+def releaseStoreFile = signingValue('storeFile', 'RELEASE_KEYSTORE_FILE')
+
 android {
     namespace 'com.cleandcim'
     compileSdk 36
@@ -13,6 +25,23 @@ android {
         targetSdk 36
         versionCode 5
         versionName '1.4'
+    }
+    signingConfigs {
+        release {
+            if (releaseStoreFile) {
+                storeFile rootProject.file(releaseStoreFile)
+                storePassword signingValue('storePassword', 'RELEASE_KEYSTORE_PASSWORD')
+                keyAlias signingValue('keyAlias', 'RELEASE_KEY_ALIAS')
+                keyPassword signingValue('keyPassword', 'RELEASE_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            if (releaseStoreFile) {
+                signingConfig signingConfigs.release
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

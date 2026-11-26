@@ -130,6 +130,65 @@ installation, or configure a private release keystore for long-term releases.
 Do not commit signing keys. All-files access and special-use foreground
 services require policy review if publishing to Google Play.
 
+## GitHub releases
+
+The release workflow runs unit tests and publishes a signed APK and its SHA-256
+checksum when a version tag is pushed. To configure it:
+
+1. Create a private release keystore **outside this repository** using a JDK:
+
+   ```powershell
+   keytool -genkeypair -v -keystore "$HOME\CleanDCIM-release.jks" -alias clean-dcim -keyalg RSA -keysize 4096 -validity 10000
+   ```
+
+   If `keytool` is not on PATH, run it from your JDK's `bin` directory. Choose
+   a strong password when prompted. Keep a secure backup of the keystore and
+   password: future updates must use the same key. With the default PKCS12
+   keystore, the key password is the same as the keystore password.
+2. In GitHub, open the repository's **Settings > Secrets and variables >
+   Actions > New repository secret** and add:
+
+   - `RELEASE_KEYSTORE_BASE64`: the entire keystore encoded as Base64. On
+     Windows, copy it without printing it using:
+
+     ```powershell
+     [Convert]::ToBase64String([IO.File]::ReadAllBytes("$HOME\CleanDCIM-release.jks")) | Set-Clipboard
+     ```
+
+     Paste the clipboard into the secret field, then clear the clipboard.
+   - `RELEASE_KEYSTORE_PASSWORD`: the keystore password.
+   - `RELEASE_KEY_ALIAS`: `clean-dcim` (or your chosen alias).
+   - `RELEASE_KEY_PASSWORD`: the key password.
+
+   These are repository secrets; the workflow does not select a GitHub
+   environment. Do not commit the keystore or share these values. GitHub
+   provides the workflow token automatically; no personal access token is
+   required.
+3. Commit and push the workflow and build changes. For each release, update
+   `versionName` and increment `versionCode` in `app/build.gradle`, commit and
+   push, then push a matching tag. For example, for version `1.5`:
+
+   ```powershell
+   git tag v1.5
+   git push origin v1.5
+   ```
+
+   Follow the run in the **Actions** tab; when it succeeds, download the APK
+   under **Releases > Assets**. A failed run can be retried from Actions.
+
+The new release key differs from the debug key used by the supplied APKs.
+Android will not install the new APK over those installations: uninstall the
+old app first (this removes its app data), then install the release APK.
+Subsequent releases signed with the same key can update it in place.
+
+For local release builds, set `RELEASE_KEYSTORE_FILE`,
+`RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS`, and `RELEASE_KEY_PASSWORD` in
+the environment before running `.\gradlew.bat assembleRelease`. Alternatively,
+put `storeFile`, `storePassword`, `keyAlias`, and `keyPassword` in the
+gitignored `keystore.properties` at the repository root. Escape backslashes
+in the `storeFile` path as `\\`. Without signing configuration, a local release
+APK is unsigned.
+
 Physical Samsung/One UI validation is still required: verify permission
 denial/retry, screenshots and screen recordings, Camera exclusion, collisions,
 disable, screen-off watching, reboot, gallery refresh, denied/disabled
