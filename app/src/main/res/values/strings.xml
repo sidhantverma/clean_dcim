@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Clean DCIM</string>
+    <string name="permissions_required">Permissions required</string>
+    <string name="grant_permissions">Grant permissions</string>
+    <string name="source_path">DCIM folder (absolute path)</string>
+    <string name="destination_path">Destination folder (absolute path)</string>
+    <string name="enable_watch">Enable watch</string>
+    <string name="disable_watch">Disable watch</string>
+    <string name="description">Camera and its contents stay untouched. Screenshots stay for at least 2 minutes for sharing. Other files move with their subfolders after at least 3 quiet seconds. Existing files are included. Name collisions never overwrite files.</string>
+    <string name="battery_settings">Battery settings</string>
+    <string name="battery_help">For reliable watching on Samsung: set this app to Unrestricted battery use and add it to Never auto sleeping apps. Android can still stop background apps.</string>
+    <string name="channel_name">DCIM watcher</string>
+    <string name="error_channel_name">Move errors</string>
+    <string name="error_notifications">Error notification settings</string>
+    <string name="notifications_help">Notifications are optional. Enable Move errors for failure alerts; DCIM watcher can be disabled separately in Android notification settings. Errors always appear here. All empty non-Camera subfolders are removed while watching.</string>
+    <string name="watching">Watching DCIM</string>
+    <string name="watching_detail">Camera stays. Screenshots wait 2 minutes; other files wait 3 quiet seconds.</string>
+    <string name="stop">Disable watch</string>
+    <string name="idle">Watch disabled</string>
+    <string name="starting">Starting watcher&#8230;</string>
+    <string name="stopping">Stopping watcher&#8230;</string>
+    <string name="active">Watch enabled</string>
+    <string name="last_check">Last check: %1$s. Waiting files: %2$d.</string>
+    <plurals name="moved_count">
+        <item quantity="one">Moved %1$d file this session.</item>
+        <item quantity="other">Moved %1$d files this session.</item>
+    </plurals>
+    <string name="error_status">Watch error: %1$s</string>
+    <string name="permission_launch_error">Cannot open permission settings: %1$s</string>
+    <string name="open_settings_error">Cannot open battery settings: %1$s</string>
+    <string name="show_log">Show log</string>
+    <string name="hide_log">Hide log</string>
+    <string name="clear_log">Clear log</string>
+    <string name="newer_logs">Newer entries</string>
+    <string name="older_logs">Older entries</string>
+    <string name="log_empty">No log entries. Entries are automatically removed after 3 days.</string>
+    <string name="log_error">Log storage error: %1$s</string>
+</resources>
